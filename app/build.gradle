@@ -1,0 +1,131 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dagger.hilt.android.plugin'
+    id 'kotlin-kapt'
+    id 'org.jetbrains.kotlin.plugin.serialization'
+    id("com.apollographql.apollo3")
+}
+
+android {
+    namespace 'com.morozov.workarea'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.morozov.workarea"
+        minSdk 21
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_compiler
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+apollo {
+    // instruct the compiler to generate Kotlin models
+    generateKotlinModels.set(true)
+}
+
+dependencies {
+
+    // Core
+    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
+    implementation platform('androidx.compose:compose-bom:2022.10.00')
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+
+    // Compose
+    implementation 'androidx.activity:activity-compose:1.8.1'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material3:material3:$compose_material3"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
+    implementation "androidx.compose.ui:ui-text-google-fonts:1.5.4"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.navigation:navigation-compose:2.7.5"
+    implementation 'com.google.android.material:material:1.10.0'
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+
+
+
+
+    // UI
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.31.2-alpha"
+    // Measures window size for Tablets
+    implementation "androidx.compose.material3:material3-window-size-class"
+
+    //Splash screen
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+
+    //Leak Canary
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+
+    // Dagger - Hilt
+    implementation "androidx.hilt:hilt-navigation-compose:1.1.0"
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Logging & Analytics
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation 'com.segment.analytics.kotlin:android:1.13.2'
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines_version"
+
+    // Coil
+    implementation "io.coil-kt:coil-compose:2.2.2"
+
+    // Apollo Client Graphql
+    implementation("com.apollographql.apollo3:apollo-runtime:3.7.4")
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11'
+    // Testing
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
+}
+apollo {
+    packageName.set("com.your_package_name")
+    generateOptionalOperationVariables.set(false)
+}

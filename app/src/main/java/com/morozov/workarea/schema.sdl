@@ -1,0 +1,26 @@
+type Query {
+    getParselyTopTopics(where: WhereInput): [Tag]
+    hasFreeArticleAccess: Boolean
+    hasAccessToShopWeb: Boolean
+    getParselyTopPosts(where: WhereInput): [Post]
+}
+
+input WhereInput {
+    limit: Int
+    section: String
+    tag: String
+    sort: String
+}
+
+type Tag {
+    name: String
+}
+
+type Post {
+    id: ID
+    title: String
+    url: String
+    image: String
+    author: String
+    date: String
+}
