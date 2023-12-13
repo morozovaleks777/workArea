@@ -111,7 +111,7 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.2.2"
 
     // Apollo Client Graphql
-    implementation("com.apollographql.apollo3:apollo-runtime:3.7.4")
+    implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
 
     // Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
@@ -126,6 +126,7 @@ dependencies {
     androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
 }
 apollo {
-    packageName.set("com.your_package_name")
-    generateOptionalOperationVariables.set(false)
+    service("service") {
+        packageName.set("com.morozov")
+    }
 }

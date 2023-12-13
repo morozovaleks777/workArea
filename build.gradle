@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        apollo_version = "2.5.9"
+        apollo_version = "3.8.2"
         compose_compiler = '1.4.7'
         compose_material3 = '1.1.2'
         lifecycle_version = '2.6.2'
@@ -13,7 +13,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.google.gms:google-services:4.4.0'
-        classpath("com.apollographql.apollo3:apollo-gradle-plugin:3.7.4")
+        classpath("com.apollographql.apollo3:apollo-gradle-plugin:3.8.2")
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {

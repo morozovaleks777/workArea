@@ -1,0 +1,28 @@
+# queries.graphql
+
+query GetParselyTopTopics {
+    tags: getParselyTopTopics(where: { limit: 6 }) {
+        name
+    }
+}
+
+query FreeArticle {
+    hasFreeArticleAccess
+}
+
+query AccessToShopWeb {
+    hasAccessToShopWeb
+}
+
+query GetReaderPassParsely {
+    posts: getParselyTopPosts(
+        where: { section: "News", tag: "Readers Pass", sort: "views", limit: 20 }
+    ) {
+        id
+        title
+        url
+        image
+        author
+        date
+    }
+}

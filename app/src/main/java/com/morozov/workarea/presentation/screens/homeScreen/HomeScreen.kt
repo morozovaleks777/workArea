@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,7 +84,10 @@ fun HomeScreen(
     val vector4Text by remember {
         mutableStateOf("12K")
     }
-
+val state = homeViewModel.state.collectAsState()
+    LaunchedEffect(Unit){
+        Log.d("home", "HomeScreen: ${state.value}")
+    }
     Scaffold(
         modifier = Modifier.padding(horizontal = 12.dp),
         containerColor = Color.Black,
