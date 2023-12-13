@@ -3,7 +3,6 @@ package com.morozov.workarea.presentation.screens.homeScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.morozov.workarea.data.ReaderPassPost
-import com.morozov.workarea.data.Tag
 import com.morozov.workarea.domain.useCases.AccessToShopWebUseCase
 import com.morozov.workarea.domain.useCases.FreeArticleUseCase
 import com.morozov.workarea.domain.useCases.GetTagsUseCase

@@ -25,11 +25,7 @@ class NetworkModule {
     @Singleton
     fun provideApolloClient(): ApolloClient {
         return ApolloClient.Builder()
-<<<<<<< Updated upstream
-            .serverUrl("https://v2server.dailywire.com/article/graphql")
-=======
             .serverUrl("https://v2server.dailywire.com/graphql")
->>>>>>> Stashed changes
             .build()
     }
 
