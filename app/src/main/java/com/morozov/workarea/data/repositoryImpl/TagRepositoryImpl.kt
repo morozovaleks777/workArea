@@ -24,7 +24,9 @@ class TagRepositoryImpl @Inject constructor(
 
 class ArticleRepositoryImpl @Inject constructor(
     private val apolloClient: ApolloClient
+
 ) : ArticleRepository {
+
     override fun hasFreeArticleAccess(): Flow<ApolloResponse<FreeArticleQuery.Data>> {
         return apolloClient.query(FreeArticleQuery()).toFlow()
     }
@@ -41,7 +43,9 @@ class ShopRepositoryImpl @Inject constructor(
 class ReaderPassRepositoryImpl @Inject constructor(
     private val apolloClient: ApolloClient
 ) : ReaderPassRepository {
+
     override fun getReaderPassPosts(): Flow<ApolloResponse<GetReaderPassParselyQuery.Data>> {
+        apolloClient.newBuilder().serverUrl("https://v2server.dailywire.com/app/graphql")
         return apolloClient.query(GetReaderPassParselyQuery()).toFlow()
     }
 }

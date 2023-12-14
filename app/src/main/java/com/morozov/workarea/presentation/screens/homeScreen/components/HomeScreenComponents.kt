@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -148,11 +149,13 @@ fun MainHomeCard(
     showButtonInMainCard: Boolean,
     showMiddleBoxText: Boolean,
     imageUrl: String?,
+    imageUrlForCard: String?,
     titleTextForBottomText: String,
     textForTypeBoxText: String,
     middleTextBoxTitle: String,
     middleTextBoxDescription: String,
     descriptionTextForBottomText: String,
+    onButtonClick: () -> Unit,
     onMenuClick: () -> Unit,
     buttonText: String
 ) {
@@ -176,10 +179,10 @@ fun MainHomeCard(
         ) {
 
             Image(
-                painter = rememberAsyncImagePainter(imageUrl),
+                painter = rememberAsyncImagePainter(imageUrlForCard),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds
+                modifier = Modifier.fillMaxSize().scale(1f),
+                contentScale = ContentScale.Fit
             )
             Box(
                 modifier = Modifier
@@ -231,7 +234,7 @@ fun MainHomeCard(
                     if (showButtonInMainCard) {
                         BaseButton(
                             modifier = Modifier,
-                            onButtonClick = {},
+                            onButtonClick = {onButtonClick()},
                             buttonText = buttonText
                         )
                     } else {

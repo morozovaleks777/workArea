@@ -1,5 +1,6 @@
 package com.morozov.workarea.presentation.screens.homeScreen
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.morozov.workarea.data.ReaderPassPost
@@ -8,9 +9,13 @@ import com.morozov.workarea.domain.useCases.FreeArticleUseCase
 import com.morozov.workarea.domain.useCases.GetTagsUseCase
 import com.morozov.workarea.domain.useCases.ReaderPassParselyUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,59 +25,108 @@ class HomeViewModel @Inject constructor(
     private val freeArticleUseCase: FreeArticleUseCase,
     private val accessToShopWebUseCase: AccessToShopWebUseCase,
     private val readerPassParselyUseCase: ReaderPassParselyUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeScreenState())
-    val state: StateFlow<HomeScreenState> = _state
 
-    init {
-        fetchData()
-    }
+//    private val _error = MutableStateFlow<Throwable?>(null)
+//    private val _stepState = MutableStateFlow<AuthStepState>(AuthNone)
+//    private val _action = MutableStateFlow<AuthUiState.AuthAction>(AuthUiState.None)
+//    private val _direction = MutableStateFlow<AuthUiState.Direction>(AuthUiState.Next())
 
-    private fun fetchData() {
-        viewModelScope.launch {
-            _state.value = _state.value.copy(isLoading = true, error = null)
+    private val _state = MutableStateFlow(HomeUiState())
+   // val state: StateFlow<HomeUiState> = _state
 
+    private val _isLoading = MutableStateFlow(false)
+
+    init{fetchData()}
+
+    val state: StateFlow<HomeUiState> = combine(
+        _state,
+        _isLoading,
+
+    ) { homeScreenState, loading, ->
+        HomeUiState(
+            tags = homeScreenState.tags,
+            hasFreeArticleAccess = homeScreenState.hasFreeArticleAccess,
+            hasAccessToShopWeb = homeScreenState.hasAccessToShopWeb,
+            readerPassPosts = homeScreenState.readerPassPosts,
+            isLoading = loading,
+            error = homeScreenState.error,
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = HomeUiState()
+    )
+
+    fun fetchData() {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val tagsResponse = getTagsUseCase.execute().first()
-                val freeArticleAccess = freeArticleUseCase.execute().first()
-                val accessToShopWeb = accessToShopWebUseCase.execute().first()
+                _isLoading.value = true
+
+
+            //    val freeArticleAccess = freeArticleUseCase.execute().take(1).firstOrNull()
+//                val accessToShopWeb = accessToShopWebUseCase.execute().take(1).firstOrNull()
                 val readerPassPosts = readerPassParselyUseCase.execute().first()
 
-                _state.value = HomeScreenState(
-                    tags = tagsResponse.data?.tags?.mapNotNull { it?.name} ?: emptyList(),
-                    hasFreeArticleAccess = freeArticleAccess.data?.hasFreeArticleAccess ?: false,
-                    hasAccessToShopWeb = accessToShopWeb.data?.hasAccessToShopWeb ?: false,
-                    readerPassPosts = readerPassPosts.data?.posts?.mapNotNull {
-                        it?.let { post ->
-                            ReaderPassPost(
-                                id = post.id ?: "",
-                                title = post.title ?: "",
-                                url = post.url ?: "",
-                                image = post.image ?: "",
-                                author = post.author ?: "",
-                                date = post.date ?: ""
-                            )
-                        }
-                    } ?: emptyList(),
-                    isLoading = false,
-                    error = null
-                )
+                val tagsResponse = getTagsUseCase.execute().first()
+
+                // Обробка різних типів даних
+                _state.value =  HomeUiState(
+                        readerPassPosts = readerPassPosts.data!!.posts?.mapNotNull {
+                            it?.let { post ->
+                                ReaderPassPost(
+                                    id = post.id ?: "",
+                                    title = post.title ?: "",
+                                    url = post.url ?: "",
+                                    image = post.image ?: "",
+                                    author = post.author ?: "",
+                                    date = post.date ?: ""
+                                )
+                            }
+                        } ?: emptyList(),
+                    tags = tagsResponse.data!!.tags?.mapNotNull { it?.name } ?: emptyList(),
+                        isLoading = false,
+                        error = null
+                    )
+
+
+
+
+
+//                    freeArticleAccess?.data != null -> HomeUiState(
+//                        hasFreeArticleAccess = freeArticleAccess.data!!.hasFreeArticleAccess ?: false,
+//                        isLoading = false,
+//                        error = null
+//                    )
+//                    accessToShopWeb?.data != null -> HomeUiState(
+//                        hasAccessToShopWeb = accessToShopWeb.data!!.hasAccessToShopWeb ?: false,
+//                        isLoading = false,
+//                        error = null
+//                    )
+
+//                    else -> {
+//                        Log.d("home", "fetchData: ${tagsResponse.data!!.tags?.mapNotNull { it?.name } ?: emptyList()}")
+//                        _state.value.copy(tags   = listOf<String>("pisdec"))}// Якщо нічого не отримано, залиште поточний стан
+//                }
+//
+//                _isLoading.value = false
             } catch (e: Exception) {
+                _isLoading.value = false
                 _state.value = _state.value.copy(isLoading = false, error = e.localizedMessage)
             }
         }
     }
-
-
-
 }
 
-data class HomeScreenState(
+@Immutable
+data class HomeUiState(
     val tags: List<String> = emptyList(),
     val hasFreeArticleAccess: Boolean = false,
     val hasAccessToShopWeb: Boolean = false,
     val readerPassPosts: List<ReaderPassPost> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null
+    val isLoading: Boolean = true,
+    val error: String? = null,
 )
+
+

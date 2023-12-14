@@ -17,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.morozov.workarea.R
 import com.morozov.workarea.presentation.components.DWAppBar
-import com.morozov.workarea.presentation.components.SystemUI
 import com.morozov.workarea.presentation.navigation.AppScreens
 import com.morozov.workarea.presentation.navigation.SharedViewModel
 import com.morozov.workarea.presentation.screens.homeScreen.components.BottomNavigationRow
@@ -42,12 +42,15 @@ fun HomeScreen(
     showUpdateAppBanner: Boolean,
     isWideScreen: Boolean
 ) {
-
-
+    val state = homeViewModel.state.collectAsState()
 
 
     val imageUrl =
         "https://s3-alpha-sig.figma.com/img/bb5c/5490/259d27be867059853967a4373509cf8c?Expires=1703462400&Signature=imOCWsGO0sIolXKh3iGbfV4dOr6r57~EH5Bj-kHWersAxXMf8rgEO21pBffSZFoY2M6Hu5fcqHISvVApPupJGpPz7eJbUODkriHHe3GnamCEocNJuMmhAwIrl~d86tyPu5BObv8A43Az~xbPPyb8xObfNZsJJP6D-lQhksP68QIYAaAhilKEmkJd1QUux1jXXz61X74rQIlTe1yWo3aasa7F23D~bRhdSwBQCHYCMyak5gokDjmS-MFhG3FK8SIPuaeD7vtr0ZJrhn-gsFCoiTA6AX9J0MPV9IVktBzlUD34JJEogLFjjdkF3DaKzvHALVmcvKbnU~Wi8KpMBgN0rw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
+    val imageUrlForCard = remember {
+       mutableStateOf(imageUrl)
+    }
+
     val titleTextForBottomText by remember {
         mutableStateOf("@Michael.Knowles")
     }
@@ -57,7 +60,7 @@ fun HomeScreen(
     val textForTypeBoxText by remember {
         mutableStateOf("Investigative Article")
     }
-    val middleTextBoxTitle by remember {
+    var middleTextBoxTitle by remember {
         mutableStateOf("The Destruction Of Statues Is A Proxy In The War On American History")
     }
     val middleTextBoxDescription by remember {
@@ -84,10 +87,14 @@ fun HomeScreen(
     val vector4Text by remember {
         mutableStateOf("12K")
     }
-val state = homeViewModel.state.collectAsState()
-    LaunchedEffect(Unit){
-        Log.d("home", "HomeScreen: ${state.value}")
-    }
+    LaunchedEffect( state.value.readerPassPosts){
+        Log.d("home", "HomeScreen: ${state.value} ")
+        if(state.value.readerPassPosts.isNotEmpty()){
+imageUrlForCard.value = state.value.readerPassPosts.get(0).image
+            middleTextBoxTitle = state.value.readerPassPosts.get(0).title
+        }}
+
+    Timber.tag("home").d("HomeScreen2: %s", state.value)
     Scaffold(
         modifier = Modifier.padding(horizontal = 12.dp),
         containerColor = Color.Black,
@@ -173,10 +180,12 @@ val state = homeViewModel.state.collectAsState()
                 buttonText = buttonText,
                 listOfBottomItems = listOfBottomItems,
                 imageUrl = imageUrl,
+                imageUrlForCard = imageUrlForCard.value,
                 titleTextForBottomText = titleTextForBottomText,
                 descriptionTextForBottomText = descriptionTextForBottomText,
                 textForTypeBoxText = textForTypeBoxText,
                 onMenuClick = {},
+                onButtonClick = {},
                 middleTextBoxTitle = middleTextBoxTitle,
                 middleTextBoxDescription = middleTextBoxDescription
             )
