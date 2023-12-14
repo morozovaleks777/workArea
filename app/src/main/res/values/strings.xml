@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">workArea</string>
+<!--     for login-->
+    <string name="please_enter_a_valid_email_address">Please enter a valid email address</string>
+    <string name="this_email_is_already_registered_to_an_account">This email is already registered to an account</string>
+    <string name="oops_you_forgot_something">Oops! You forgot something</string>
+    <string name="contain_at_least_3_of_the_following_4_types_of_characters">Contain at least 3 of the following 4 types of characters</string>
+    <string name="error_password_min_characters">At least %d characters in length</string>
+    <string name="upper_case">Upper case letters(A-Z)</string>
+    <string name="lower_case">Lower case letters(a-z)</string>
+    <string name="error_password_special_characters">Special character (%s)</string>
+    <string name="error_password_numeric">Numbers(i.e. 0–9)</string>
+    <string name="password_error_empty">Password can not be empty</string>
+    <string name="sign_up">SIGN UP</string>
+    <string name="log_in">LOG IN</string>
+    <string name="email_short">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="sign_in_title">Log In To Your Account</string>
 </resources>

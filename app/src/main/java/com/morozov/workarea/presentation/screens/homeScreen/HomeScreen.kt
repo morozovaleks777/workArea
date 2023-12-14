@@ -33,6 +33,7 @@ import com.morozov.workarea.presentation.screens.homeScreen.components.CircularS
 import com.morozov.workarea.presentation.screens.homeScreen.components.MainHomeCard
 import com.morozov.workarea.presentation.screens.homeScreen.components.NavigationItem
 import timber.log.Timber
+val imageUrl = "https://s3-alpha-sig.figma.com/img/bb5c/5490/259d27be867059853967a4373509cf8c?Expires=1703462400&Signature=imOCWsGO0sIolXKh3iGbfV4dOr6r57~EH5Bj-kHWersAxXMf8rgEO21pBffSZFoY2M6Hu5fcqHISvVApPupJGpPz7eJbUODkriHHe3GnamCEocNJuMmhAwIrl~d86tyPu5BObv8A43Az~xbPPyb8xObfNZsJJP6D-lQhksP68QIYAaAhilKEmkJd1QUux1jXXz61X74rQIlTe1yWo3aasa7F23D~bRhdSwBQCHYCMyak5gokDjmS-MFhG3FK8SIPuaeD7vtr0ZJrhn-gsFCoiTA6AX9J0MPV9IVktBzlUD34JJEogLFjjdkF3DaKzvHALVmcvKbnU~Wi8KpMBgN0rw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
 
 @Composable
 fun HomeScreen(
@@ -45,8 +46,6 @@ fun HomeScreen(
     val state = homeViewModel.state.collectAsState()
 
 
-    val imageUrl =
-        "https://s3-alpha-sig.figma.com/img/bb5c/5490/259d27be867059853967a4373509cf8c?Expires=1703462400&Signature=imOCWsGO0sIolXKh3iGbfV4dOr6r57~EH5Bj-kHWersAxXMf8rgEO21pBffSZFoY2M6Hu5fcqHISvVApPupJGpPz7eJbUODkriHHe3GnamCEocNJuMmhAwIrl~d86tyPu5BObv8A43Az~xbPPyb8xObfNZsJJP6D-lQhksP68QIYAaAhilKEmkJd1QUux1jXXz61X74rQIlTe1yWo3aasa7F23D~bRhdSwBQCHYCMyak5gokDjmS-MFhG3FK8SIPuaeD7vtr0ZJrhn-gsFCoiTA6AX9J0MPV9IVktBzlUD34JJEogLFjjdkF3DaKzvHALVmcvKbnU~Wi8KpMBgN0rw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
     val imageUrlForCard = remember {
        mutableStateOf(imageUrl)
     }

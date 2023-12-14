@@ -24,9 +24,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.morozov.workarea.presentation.screens.homeScreen.HomeScreen
 import com.morozov.workarea.presentation.navigation.NavigationUtils.getExtrasViewModel
 import com.morozov.workarea.presentation.screens.auth.AuthScreen
-import com.morozov.workarea.presentation.screens.homeScreen.HomeScreen
 import com.morozov.workarea.presentation.screens.splash.SplashScreen
 
 private const val ANIMATION_SPEED = 900
@@ -66,9 +67,11 @@ fun AppNavigation(
         }
 
         composableAnimated(
-            route = AppScreens.AuthScreen.name,
+            route =  AppScreens.AuthScreen.name,//"${AppScreens.AuthScreen.name}/?${NavigationArguments.ARG_AUTH_STATE}={${NavigationArguments.ARG_AUTH_STATE}}",
             enterTransition = Transitions.FADE_IN,
             exitTransition = Transitions.FADE_OUT,
+           // arguments = listOf(navArgument(NavigationArguments.ARG_AUTH_STATE) {
+        //    })
         ) {
             AuthScreen(
                 navController = navController,

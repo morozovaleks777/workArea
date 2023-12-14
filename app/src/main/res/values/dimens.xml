@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--General values-->
+    <dimen name="padding_m">8dp</dimen>
+    <dimen name="padding_l">12dp</dimen>
+    <dimen name="padding_xl">16dp</dimen>
+    <dimen name="padding_xxl">24dp</dimen>
+    <dimen name="border_m">1dp</dimen>
+    <dimen name="padding_screen">20dp</dimen>
+    <!--Home screen values-->
+    <dimen name="home_padding_vertical">8dp</dimen>
+    <!--Detail screen values-->
+    <dimen name="detail_tablet_horizontal_screen_padding">40dp</dimen>
+    <dimen name="detail_phone_horizontal_screen_padding">20dp</dimen>
+    <dimen name="detail_horizontal_text_padding">16dp</dimen>
+    <dimen name="detail_horizontal_progress_padding">8dp</dimen>
+    <dimen name="detail_spacing_vertical">24dp</dimen>
+    <!--Auth screen values-->
+    <dimen name="auth_spacing_vertical">24dp</dimen>
+    <dimen name="auth_spacing_bottom">40dp</dimen>
+    <dimen name="auth_padding_horizontal">20dp</dimen>
+    <dimen name="auth_secondary_padding_horizontal">82dp</dimen>
+    <!--Actionbar values-->
+    <dimen name="actionbar_logo_height">24dp</dimen>
+    <!--Home screen values-->
+    <dimen name="account_screen_padding">20dp</dimen>
+</resources>

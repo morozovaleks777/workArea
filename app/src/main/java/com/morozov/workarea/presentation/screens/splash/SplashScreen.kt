@@ -18,6 +18,8 @@ Text("Splash",
 style = MaterialTheme.typography.headlineLarge.copy(color = Color.White))
     LaunchedEffect(Unit){
         delay(1000)
-        navController.navigate(AppScreens.AuthScreen.name)
+        navController.navigate(AppScreens.AuthScreen.name) {
+            popUpTo(navController.graph.id) { inclusive = true }
+        }
     }
 }
