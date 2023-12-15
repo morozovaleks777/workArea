@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.morozov.workarea.presentation.navigation.NavigationArguments
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -128,13 +129,20 @@ class AuthViewModel@Inject constructor(
         _stepState.next = LoadingStep(_stepState.value)
 
         viewModelScope.launch(Dispatchers.IO) {
+delay(1500)
+            _stepState.next = DoneStep(0,0,null)
+            delay(2000)
 
+            done()
         }
     }
     fun reset() {
 
         _stepState.next = prepareInitialStep()
 
+    }
+    private fun done() {
+        _stepState.next = AuthSkip
     }
 
     private fun validateEmail(email: String): EmailState {

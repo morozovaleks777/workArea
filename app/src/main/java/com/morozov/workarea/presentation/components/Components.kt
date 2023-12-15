@@ -205,9 +205,9 @@ fun BaseOutlinedButton(
     buttonText: String,
     modifier: Modifier = Modifier,
     isButtonEnabled: Boolean = true,
-    containerColor: Color = Color.White, //ColorsExtra.SolidLight100,
+    containerColor: Color = Color.Black, //ColorsExtra.SolidLight100,
     disabledContainerColor: Color =  Color.Gray,//ColorsExtra.Gray600,
-    textColor: Color = Color.Black, //ColorsExtra.SolidDark100,
+    textColor: Color = Color.White, //ColorsExtra.SolidDark100,
     textColorDisabled: Color = Color.Black, //ColorsExtra.SolidDisabled100,
     radius: Dp = 4.dp,
     borderColor: Color = Color.Transparent,
@@ -231,7 +231,6 @@ fun BaseOutlinedButton(
         Text(
             text = buttonText,
             style = textStyle,
-            color = textColor
         )
     }
 }
@@ -400,7 +399,7 @@ fun DefaultInputField(
                         },
                         contentDescription = "password visibility",
                         modifier = Modifier.size(24.dp),
-                        tint = Color.White  //ColorsExtra.SolidLight100
+                        tint = Color.Black  //ColorsExtra.SolidLight100
                     )
                 }
             }
@@ -420,7 +419,7 @@ fun DefaultClickableText(
     clickableTexts: List<Pair<String, String>>,
     modifier: Modifier = Modifier,
     textStyle: SpanStyle = SpanStyle(
-        color = Color.White, //ColorsExtra.SolidLight100,
+        color = Color.Gray, //ColorsExtra.SolidLight100,
         fontSize = 14.sp,
         fontWeight = FontWeight(600),
         fontFamily = FontFamily(Font(R.font.libre_franklin_black)),

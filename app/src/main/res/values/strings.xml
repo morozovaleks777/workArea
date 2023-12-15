@@ -17,4 +17,6 @@
     <string name="password">Password</string>
     <string name="forgot_password">Forgot your password?</string>
     <string name="sign_in_title">Log In To Your Account</string>
+    <string name="log_in_with_link">Log In With Link</string>
+    <string name="don_t_have_an_account">Don’t have an account?</string>
 </resources>

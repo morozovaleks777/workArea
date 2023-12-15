@@ -14,7 +14,10 @@ val Pink40 = Color(0xFF7D5260)
 
 object ColorsExtra {
     val darkColor: Color = Color(0xFF0A0909)
-val grey_72: Color = Color(0xFFB8B8B8)
+    val grey_72: Color = Color(0xFFB8B8B8)
+    val grey_96: Color = Color(0xFFF5F5F5)
+    val  gray_7: Color = Color(0xFF121212)
     val colorForTypeBoxText: Color = Color(0xFF000000).copy(alpha = 0.4f)
+    val ForElipseIcon: Color = Color(0xFFFFFFFF).copy(alpha = 0.2f)
 
 }

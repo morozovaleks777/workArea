@@ -45,6 +45,7 @@ import com.morozov.workarea.presentation.components.BaseOutlinedButton
 import com.morozov.workarea.presentation.components.CloseIcon
 import com.morozov.workarea.presentation.components.DefaultClickableText
 import com.morozov.workarea.presentation.components.rememberKeyboardState
+import com.morozov.workarea.ui.theme.ColorsExtra
 import com.morozov.workarea.ui.theme.libreFranklin
 
 
@@ -66,8 +67,8 @@ fun AuthActions(
         val textStyle = TextStyle(
             fontFamily = libreFranklin,
             fontWeight = FontWeight.W600,
-            fontSize = 16.sp,
-            lineHeight = 20.sp,
+            fontSize = 14.sp,
+            lineHeight = 16.sp,
         )
         if (primaryButtonText.isNotEmpty()) {
             BaseOutlinedButton(
@@ -75,7 +76,9 @@ fun AuthActions(
                 { primaryButtonClick(primaryButtonText) },
                 buttonText = primaryButtonText,
                 isButtonEnabled = primaryButtonEnabled,
-                disabledContainerColor = Color.Gray, //ColorsExtra.SolidInactive100,
+                disabledContainerColor =  ColorsExtra.grey_96,
+                textColorDisabled =  ColorsExtra.grey_72,
+                textColor = Color.White,
                 radius = 6.dp,
                 textStyle = textStyle
             )
@@ -86,9 +89,9 @@ fun AuthActions(
                 onButtonClick = { secondaryButtonClick(secondaryButtonText) },
                 buttonText = secondaryButtonText,
                 containerColor = Color.Transparent,
-                textColor = Color.White, //ColorsExtra.SolidLight100,
+                textColor = Color.Black,
                 textStyle = textStyle,
-                borderColor = Color.White //ColorsExtra.SolidLight100
+                borderColor = Color.Black
             )
         }
     }
@@ -114,6 +117,7 @@ fun AuthForm(
     primaryButtonText: String = "",
     primaryButtonClick: (String) -> Unit = {},
     primaryButtonEnabled: Boolean = true,
+    authHeaderStyle: TextStyle,
     secondaryButtonText: String = "",
     secondaryButtonClick: (String) -> Unit = {},
     footer: @Composable ColumnScope.() -> Unit = {},
@@ -125,10 +129,9 @@ fun AuthForm(
 
     Column(
         modifier = modifier
-            .padding(horizontal = dimensionResource(id = R.dimen.auth_padding_horizontal))
+            .padding(horizontal = 12.dp)
             .padding(bottom = bottomPadding)
     ) {
-        AuthTopBar(additionalContent = topBarExtra, showLogo = showToBarLogo)
         LazyColumn(
             modifier = Modifier.run {
                 if (buttonsAnchored) {
@@ -143,6 +146,7 @@ fun AuthForm(
             item {
                 if (title.isNotEmpty() || description.isNotEmpty()) {
                     AuthHeader(
+                        style = authHeaderStyle,
                         title = title,
                         description = description,
                         textAlignment = headerTextAlignment
@@ -215,24 +219,10 @@ fun AuthTopBar(
                     }
                 )
             }
-            if (showLogo) {
-             //   Image(
-//                    painter = painterResource(R.drawable.bentkey_logo),
-//                    contentDescription = "logo",
-//                    modifier = Modifier
-//                        .width(93.dp)
-//                        .height(24.dp),
-//                    colorFilter = ColorFilter.tint(logoColor)
-//                )
-//                Spacer(modifier = Modifier.weight(1f))
-            }
 
             additionalContent()
         }
-//        HorizontalDivider(
-//            thickness = Dp.Hairline,
-//            color = dividerColor,
-//        )
+
     }
 }
 
@@ -260,6 +250,7 @@ fun ClickableLink(
 fun AuthHeader(
     modifier: Modifier = Modifier,
     title: String = "",
+    style: TextStyle = MaterialTheme.typography.headlineSmall,
     description: String = "",
     textAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
@@ -272,7 +263,7 @@ fun AuthHeader(
         if (title.isNotEmpty()) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.headlineSmall,
+                style = style,
               //  color = ColorsExtra.SolidLight100,
                 modifier = Modifier
                     .align(Alignment.Start)

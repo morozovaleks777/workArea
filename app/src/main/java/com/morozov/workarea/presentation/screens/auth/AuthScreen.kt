@@ -2,40 +2,24 @@
 package com.morozov.workarea.presentation.screens.auth
 
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -46,15 +30,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import coil.compose.rememberAsyncImagePainter
 import com.morozov.workarea.R
-import com.morozov.workarea.presentation.screens.homeScreen.imageUrl
+import com.morozov.workarea.presentation.screens.homeScreen.components.NavigationItem
 import com.morozov.workarea.ui.theme.AppTheme
+import com.morozov.workarea.ui.theme.ColorsExtra
 import kotlinx.coroutines.delay
+import timber.log.Timber
 
 const val STEP_TRANSITION_DURATION: Int = 300
 
@@ -77,6 +65,9 @@ fun AuthScreen(
     )
     val logoImage by remember {
         mutableIntStateOf( R.drawable.logo_small)
+    }
+    val logoImageBlack by remember {
+        mutableIntStateOf( R.drawable.logo_small_black)
     }
     val loginText by remember {
         mutableStateOf("BE PART OF \nTHE CULTURE")
@@ -119,7 +110,9 @@ fun AuthScreen(
                 AuthFlowSheet(
                     it,
                     onExit = { navController.popBackStack().also { viewModel.reset() } },
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    logoImageBlack = logoImageBlack,
+                    isWideScreen = isWideScreen
                 )
             }
         },
@@ -140,7 +133,7 @@ fun AuthScreen(
         ContentForFirstPage(
             isWideScreen = isWideScreen,
             loginText = loginText,
-        logoImage = logoImage)
+            logoImage = logoImage)
     }
 }
 
@@ -158,30 +151,30 @@ fun ContentForFirstPage(
         end = Offset(Float.POSITIVE_INFINITY, 0.0f)
     )
 
-    Image(
-        painter = rememberAsyncImagePainter(imageUrl),
-        contentDescription = null,
-        modifier = Modifier
-            .fillMaxSize()
-            .scale(1f),
-        contentScale = ContentScale.Crop
-    )
 //    Image(
-//        painter = if (isWideScreen) {
-//            // needs to changed
-//            painterResource(R.drawable.portrait_login_image)
-//        } else {
-//            painterResource(R.drawable.portrait_login_image)
-//        },
-//        contentDescription = "",
-//        contentScale = ContentScale.Crop,
+//        painter = rememberAsyncImagePainter(imageUrl),
+//        contentDescription = null,
 //        modifier = Modifier
 //            .fillMaxSize()
+//            .scale(1f),
+//        contentScale = ContentScale.Crop
 //    )
+    Image(
+        painter = if (isWideScreen) {
+            // needs to be changed
+            painterResource(R.drawable.image_for_login_screen)
+        } else {
+            painterResource(R.drawable.image_for_login_screen)
+        },
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxSize()
+    )
     Box(
         modifier = Modifier
             .fillMaxSize()
-          //  .background(gradient )
+         //  .background(gradient )
     ) {
 
         Box(modifier = Modifier.fillMaxSize()) {
@@ -190,7 +183,7 @@ fun ContentForFirstPage(
                 contentDescription = "",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
-                    .padding(bottom = 280.dp, start = 4.dp)
+                    .padding(bottom = 411.dp, start = 4.dp)
                     .size(149.dp)
                     .scale(0.7f)
                     .align(if (isWideScreen) Alignment.BottomCenter else Alignment.BottomStart)
@@ -205,10 +198,69 @@ fun ContentForFirstPage(
                 ),
                 textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start,
                 modifier = Modifier
-                    .padding(bottom = 248.dp, start = 24.dp)
+                    .padding(bottom = 312.dp, start = 24.dp)
                     .align(if (isWideScreen) Alignment.BottomCenter else Alignment.BottomStart)
             )
+
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 248.dp, start = 24.dp)
+                    .align(if (isWideScreen) Alignment.BottomCenter else Alignment.BottomStart)
+            ) {
+                IconsRow()
+            }
+
         }
+    }
+}
+
+
+
+@Composable
+private fun IconsRow() {
+    val items = listOf(
+        Triple(R.drawable.ellipse_29, R.drawable.listen, "click1"),
+        Triple(R.drawable.ellipse_29, R.drawable.play, "click2"),
+        Triple(R.drawable.ellipse_29, R.drawable.inactive, "click3")
+    )
+    CircularProgressIndicatorSample(
+        image = R.drawable.active,
+        progress = 0.25f,
+        size = 17.dp,
+        onClick = { Timber.tag("auth").d("ContentForFirstPage: click") }
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    items.forEach { (mainImage, subImage, clickTag) ->
+
+        Box(
+            modifier = Modifier
+                .wrapContentSize()
+                .clickable {
+                    Timber
+                        .tag("auth")
+                        .d("ContentForFirstPage: $clickTag")
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = mainImage),
+                contentDescription = null,
+                modifier = Modifier.size(40.dp)
+            )
+            Image(
+                painter = painterResource(id = subImage),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(20.dp)
+                    .clickable {
+                        Timber
+                            .tag("auth")
+                            .d("ContentForFirstPage: $clickTag")
+                    }
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
     }
 }
 
@@ -257,6 +309,8 @@ private fun <T : AuthStepState> AnimateSheetContent(
 fun <T : AuthStepState> AuthFlowSheet(
     uiState: AuthViewModel.AuthUiState<T>,
     currentState: AuthStepState = uiState.step,
+    isWideScreen: Boolean,
+    logoImageBlack: Int,
     onExit: () -> Unit,
     viewModel: AuthViewModel,
 ) {
@@ -271,14 +325,14 @@ fun <T : AuthStepState> AuthFlowSheet(
         modifier = Modifier
             .fillMaxHeight(AppTheme.dimens.bottomSheetHeightFraction)
             .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color.Transparent,
-                        Color.Black
-                    )
-                )
-            )
+         //   .background(
+//                brush = Brush.verticalGradient(
+//                    listOf(
+//                        Color.Transparent,
+//                        Color.Black
+//                    )
+//                )
+//            )
     ) {
         when (currentState) {
             is AuthInitialStep -> {
@@ -301,7 +355,11 @@ fun <T : AuthStepState> AuthFlowSheet(
 
             is LoadingStep -> {} //AuthLoading()
 
-            is DoneStep -> {}
+            is DoneStep -> {
+                LoginScreen(isWideScreen = isWideScreen, navController = NavController(LocalContext.current) )
+
+            }
+
 
             is PurchaseStep -> {}
 
@@ -314,7 +372,15 @@ fun <T : AuthStepState> AuthFlowSheet(
                 //    AnalyticsManager.Default.view(context, SignInRoute)
                 }
                 SignInCredentials(
-                    onLoginClick = currentState::confirmCredentials,
+                    onLoginClick = { email, password ->
+                        currentState.confirmCredentials(
+                            email,
+                            password
+                        )
+                    },
+                    onLoginWithLink = {},
+                    logoImageBlack = logoImageBlack,
+                    isWideScreen = isWideScreen,
                     onForgotPasswordClick = currentState::forgotPassword,
                     email = currentState.email,
                     password = currentState.password,
@@ -373,10 +439,57 @@ fun <T : AuthStepState> AuthFlowSheet(
 //                    onExit = { label -> exit(label) },
 //                )
             }
-
             is LegalContent -> {}
 
             else -> {}
         }
     }
 }
+
+@Composable
+fun CircularProgressIndicatorSample(progress: Float = 0.85f, image:Int, size: Dp, onClick: () -> Unit) {
+
+    Row(
+        modifier = Modifier
+            .wrapContentSize()
+            .clickable { onClick() },
+        horizontalArrangement = Arrangement.Start
+    ) {
+
+
+        Box(
+            modifier = Modifier.size(40.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            var progress by remember { mutableStateOf(progress) }
+            val animatedProgress = animateFloatAsState(
+                targetValue = progress,
+                animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+            ).value
+            Box(
+                modifier = Modifier.size(40.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = image),
+                    contentDescription = null,
+                    modifier = Modifier.size(size)
+                )
+
+            }
+
+
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape),
+                progress = animatedProgress,
+                color = Color.Red,
+                trackColor = ColorsExtra.ForElipseIcon,
+                strokeWidth = 1.dp
+            )
+        }
+
+    }
+}
+

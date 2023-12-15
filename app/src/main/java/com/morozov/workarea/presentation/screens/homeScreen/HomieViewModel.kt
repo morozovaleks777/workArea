@@ -1,6 +1,7 @@
 package com.morozov.workarea.presentation.screens.homeScreen
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.morozov.workarea.data.ReaderPassPost
@@ -8,6 +9,9 @@ import com.morozov.workarea.domain.useCases.AccessToShopWebUseCase
 import com.morozov.workarea.domain.useCases.FreeArticleUseCase
 import com.morozov.workarea.domain.useCases.GetTagsUseCase
 import com.morozov.workarea.domain.useCases.ReaderPassParselyUseCase
+import com.morozov.workarea.presentation.screens.auth.AuthNone
+import com.morozov.workarea.presentation.screens.auth.AuthStepState
+import com.morozov.workarea.presentation.screens.auth.AuthViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,23 +32,25 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-//    private val _error = MutableStateFlow<Throwable?>(null)
-//    private val _stepState = MutableStateFlow<AuthStepState>(AuthNone)
-//    private val _action = MutableStateFlow<AuthUiState.AuthAction>(AuthUiState.None)
-//    private val _direction = MutableStateFlow<AuthUiState.Direction>(AuthUiState.Next())
-
+    private val _error = MutableStateFlow<Throwable?>(null)
+    private val _stepState = MutableStateFlow<AuthStepState>(AuthNone)
+    private val _action = MutableStateFlow<AuthViewModel.AuthUiState.AuthAction>(AuthViewModel.AuthUiState.None)
+    private val _direction = MutableStateFlow<AuthViewModel.AuthUiState.Direction>(AuthViewModel.AuthUiState.Next())
+    private val _requireAction = MutableStateFlow<HomeUiState.HomeAction>(HomeUiState.None)
     private val _state = MutableStateFlow(HomeUiState())
    // val state: StateFlow<HomeUiState> = _state
 
     private val _isLoading = MutableStateFlow(false)
 
-    init{fetchData()}
+    init{fetchData()
+    }
 
-    val state: StateFlow<HomeUiState> = combine(
+    val homeUiState: StateFlow<HomeUiState> = combine(
         _state,
         _isLoading,
+        _requireAction,
 
-    ) { homeScreenState, loading, ->
+    ) { homeScreenState, loading, action ->
         HomeUiState(
             tags = homeScreenState.tags,
             hasFreeArticleAccess = homeScreenState.hasFreeArticleAccess,
@@ -52,6 +58,7 @@ class HomeViewModel @Inject constructor(
             readerPassPosts = homeScreenState.readerPassPosts,
             isLoading = loading,
             error = homeScreenState.error,
+            action = action
         )
     }.stateIn(
         scope = viewModelScope,
@@ -117,6 +124,9 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+    fun onActionHandled() {
+        _requireAction.value = HomeUiState.None
+    }
 }
 
 @Immutable
@@ -127,6 +137,18 @@ data class HomeUiState(
     val readerPassPosts: List<ReaderPassPost> = emptyList(),
     val isLoading: Boolean = true,
     val error: String? = null,
-)
+
+
+    val action: HomeAction = None,
+){
+    sealed class HomeAction
+    object OpenProfilePage : HomeAction()
+
+
+    object OpenPrivacy : HomeAction()
+    object None : HomeAction()
+
+    data class RequestPaywall(val isUserAuthorized: Boolean) : HomeAction()
+}
 
 

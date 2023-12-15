@@ -22,11 +22,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.morozov.workarea.presentation.screens.homeScreen.HomeScreen
 import com.morozov.workarea.presentation.navigation.NavigationUtils.getExtrasViewModel
+import com.morozov.workarea.presentation.screens.auth.AuthMainStates
 import com.morozov.workarea.presentation.screens.auth.AuthScreen
 import com.morozov.workarea.presentation.screens.splash.SplashScreen
 
@@ -53,7 +56,8 @@ fun AppNavigation(
         composableAnimated(
             route = AppScreens.SplashScreen.name,
         ) {
-            SplashScreen(navController = navController, isWideScreen = isWideScreen)
+            SplashScreen(navController = navController,
+                isWideScreen = isWideScreen)
         }
         composableAnimated(AppScreens.HomeScreen.name) {
             val transition = rememberUpdatedState(newValue = transition)
@@ -67,11 +71,13 @@ fun AppNavigation(
         }
 
         composableAnimated(
-            route =  AppScreens.AuthScreen.name,//"${AppScreens.AuthScreen.name}/?${NavigationArguments.ARG_AUTH_STATE}={${NavigationArguments.ARG_AUTH_STATE}}",
+            route = "${AppScreens.AuthScreen.name}/?${NavigationArguments.ARG_AUTH_STATE}={${NavigationArguments.ARG_AUTH_STATE}}",
             enterTransition = Transitions.FADE_IN,
             exitTransition = Transitions.FADE_OUT,
-           // arguments = listOf(navArgument(NavigationArguments.ARG_AUTH_STATE) {
-        //    })
+            arguments = listOf(navArgument(NavigationArguments.ARG_AUTH_STATE) {
+                type = NavType.EnumType(AuthMainStates::class.java)
+                defaultValue = AuthMainStates.Initial
+            })
         ) {
             AuthScreen(
                 navController = navController,
@@ -145,7 +151,7 @@ object NavigationUtils {
             }
         }
 
-        navigate(route = basicRoute)
+        navigate(route = basicRoute) //{popUpTo(this@navigate.graph.id) { inclusive = true } }
     }
 
     @Composable

@@ -1,5 +1,6 @@
 package com.morozov.workarea.presentation.screens.homeScreen
 
+
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.morozov.workarea.R
 import com.morozov.workarea.presentation.components.DWAppBar
 import com.morozov.workarea.presentation.navigation.AppScreens
@@ -33,21 +34,62 @@ import com.morozov.workarea.presentation.screens.homeScreen.components.CircularS
 import com.morozov.workarea.presentation.screens.homeScreen.components.MainHomeCard
 import com.morozov.workarea.presentation.screens.homeScreen.components.NavigationItem
 import timber.log.Timber
+import com.morozov.workarea.presentation.navigation.NavigationUtils.navigate
+import com.morozov.workarea.presentation.screens.auth.AuthMainStates
+import kotlinx.coroutines.delay
+
 val imageUrl = "https://s3-alpha-sig.figma.com/img/bb5c/5490/259d27be867059853967a4373509cf8c?Expires=1703462400&Signature=imOCWsGO0sIolXKh3iGbfV4dOr6r57~EH5Bj-kHWersAxXMf8rgEO21pBffSZFoY2M6Hu5fcqHISvVApPupJGpPz7eJbUODkriHHe3GnamCEocNJuMmhAwIrl~d86tyPu5BObv8A43Az~xbPPyb8xObfNZsJJP6D-lQhksP68QIYAaAhilKEmkJd1QUux1jXXz61X74rQIlTe1yWo3aasa7F23D~bRhdSwBQCHYCMyak5gokDjmS-MFhG3FK8SIPuaeD7vtr0ZJrhn-gsFCoiTA6AX9J0MPV9IVktBzlUD34JJEogLFjjdkF3DaKzvHALVmcvKbnU~Wi8KpMBgN0rw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
 
 @Composable
 fun HomeScreen(
-    navController: NavHostController,
+    navController: NavController,
     homeViewModel: HomeViewModel,
     sharedViewModel: SharedViewModel,
     showUpdateAppBanner: Boolean,
     isWideScreen: Boolean
 ) {
-    val state = homeViewModel.state.collectAsState()
+    val homeUiState by homeViewModel.homeUiState.collectAsState()
+
+
+
+    LaunchedEffect(key1 = homeUiState) {
+        when (val action = homeUiState.action) {
+            is HomeUiState.OpenProfilePage -> {
+                /*
+                Each time when we open ProfilePage we need to check the Age of User, that's why
+                we first navigate to ContentLockScreen and only from it to ProfilePage
+                */
+              //  navController.navigate(AppScreens.ContentLockScreen, AuthMainStates.AgeGate)
+            }
+
+
+
+            is HomeUiState.RequestPaywall -> {
+
+                if (!action.isUserAuthorized) {
+                    navController.navigate(AppScreens.AuthScreen, AuthMainStates.Initial)
+                } else {
+                  //  navController.navigate(AppScreens.ContentLockScreen, AuthMainStates.Payment)
+                }
+            }
+
+            is HomeUiState.OpenPrivacy -> {
+//                AnalyticsManager.Default.view(context, LegalRoute)
+//                navController.navigate(AppScreens.LegalScreen.name)
+            }
+
+
+            HomeUiState.None -> {
+            }
+        }
+        homeViewModel.onActionHandled()
+    }
+
+
 
 
     val imageUrlForCard = remember {
-       mutableStateOf(imageUrl)
+       mutableStateOf("")
     }
 
     val titleTextForBottomText by remember {
@@ -86,14 +128,14 @@ fun HomeScreen(
     val vector4Text by remember {
         mutableStateOf("12K")
     }
-    LaunchedEffect( state.value.readerPassPosts){
-        Log.d("home", "HomeScreen: ${state.value} ")
-        if(state.value.readerPassPosts.isNotEmpty()){
-imageUrlForCard.value = state.value.readerPassPosts.get(0).image
-            middleTextBoxTitle = state.value.readerPassPosts.get(0).title
+    LaunchedEffect( homeUiState.readerPassPosts){
+        Log.d("home", "HomeScreen: ${homeUiState} ")
+        if(homeUiState.readerPassPosts.isNotEmpty()){
+imageUrlForCard.value = homeUiState.readerPassPosts.get(0).image
+            middleTextBoxTitle = homeUiState.readerPassPosts.get(0).title
         }}
 
-    Timber.tag("home").d("HomeScreen2: %s", state.value)
+    Timber.tag("home").d("HomeScreen2: %s", homeUiState)
     Scaffold(
         modifier = Modifier.padding(horizontal = 12.dp),
         containerColor = Color.Black,
